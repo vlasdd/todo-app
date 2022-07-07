@@ -8,7 +8,7 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 gap: 4%;
-padding: 0 5% 20% 5%;
+padding: 0 30px 20% 30px;
 overflow: hidden; 
 overflow-y: auto;
 
