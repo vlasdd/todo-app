@@ -1,8 +1,7 @@
-import { nanoid } from 'nanoid';
 import React, { useState } from 'react'
 import TasksTypes from '../../constants/tasks-types';
 import useWindowWidth from '../../helpers/useWindowWidth';
-import ITask from '../../interfaces/task';
+import currentTab from '../../store/currentTab';
 import Menu from '../../svgs/menu/Menu';
 import Button from '../button/Button';
 import Task from '../task/Task';
@@ -10,45 +9,16 @@ import Text from '../text/Text'
 import TypesSection from '../types-section/TypesSection';
 import Wrapper from '../wrapper/Wrapper';
 import { StyledTaskInput, StyledTasksSection, TasksWrapper } from './TasksSection.styled';
+import allTasks from "../../store/tasks";
+import { observer } from 'mobx-react-lite';
 
-interface ITasksSectionProps {
-  currentTab: TasksTypes;
-  tasks: ITask[];
-  setTasks: React.Dispatch<React.SetStateAction<ITask[]>>;
-  setCurrentTab: React.Dispatch<React.SetStateAction<TasksTypes>>;
-}
-
-const TasksSection: React.FC<ITasksSectionProps> = (props) => {
+const TasksSection: React.FC = observer(() => {
   const [wordEntering, setWordEntering] = useState<string>("");
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const width = useWindowWidth();
 
-  const createTask = () => {
-    const newTask = {
-      id: nanoid(),
-      text: wordEntering,
-      isDone: false,
-      type: props.currentTab,
-    }
-
-    props.setTasks(prevTasks => [...prevTasks, newTask]);
-    setWordEntering("");
-  }
-
-  const removeFromTasks = (id: string) => {
-    props.setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
-  }
-
-  const toggleDone = (id: string) => {
-    props.setTasks(prevTasks => prevTasks.map(task => {
-      if(task.id === id){
-        return {...task, isDone: !task.isDone};
-      }
-
-      return task;
-    }))
-  }
+  const tasks = allTasks.defineTasks(currentTab.currentTab);
 
   return (
     <StyledTasksSection width={width}>
@@ -68,9 +38,8 @@ const TasksSection: React.FC<ITasksSectionProps> = (props) => {
         isMenuOpen && width < 641 ?
           <Wrapper width="100%" height="60%">
             <TypesSection
-              currentTab={props.currentTab}
               clickEvent={(type: TasksTypes) => {
-                props.setCurrentTab(type);
+                currentTab.currentTab = type;
                 setIsMenuOpen(false);
               }}
               border={false}
@@ -78,36 +47,35 @@ const TasksSection: React.FC<ITasksSectionProps> = (props) => {
           </Wrapper> :
           <>
             <StyledTaskInput
-              placeholder={`Add a new task inside '${props.currentTab}' category`}
+              placeholder={`Add a new task inside '${currentTab.currentTab}' category`}
               type="text"
               value={wordEntering}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWordEntering(e.target.value)}
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === "Enter") {
-                  createTask();
+                  allTasks.createTask(wordEntering, currentTab.currentTab);
+                  setWordEntering("");
                 }
               }}
             />
             {
-              props.tasks.length ?
+              tasks.length ?
                 <TasksWrapper width="100%" direction="column" gap="10px" items="start">
                   {
-                    props.tasks.map(task => (
+                    tasks.map(task => (
                       <Task
                         {...task}
-                        removeFromTasks={() => removeFromTasks(task.id)}
-                        toggleDone={toggleDone}
                         key={task.id}
                       />
                     ))
                   }
                 </TasksWrapper> :
-                <Text color="#838386">You got no '{props.currentTab}' tasks</Text>
+                <Text color="#838386">You got no '{currentTab.currentTab}' tasks</Text>
             }
           </>
       }
     </StyledTasksSection>
   )
-}
+})
 
 export default TasksSection

@@ -8,13 +8,10 @@ import Button from '../button/Button';
 import Text from '../text/Text';
 import Wrapper from '../wrapper/Wrapper';
 import { StyledCategoryLabel, TaskWrapper } from './Task.styled';
+import allTasks from "../../store/tasks";
+import { observer } from 'mobx-react-lite';
 
-interface ITaskProps extends ITask {
-    removeFromTasks: () => void;
-    toggleDone: (id: string) => void;
-}
-
-const Task: React.FC<ITaskProps> = (props) => {
+const Task: React.FC<ITask> = observer((props) => {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     return (
@@ -25,7 +22,7 @@ const Task: React.FC<ITaskProps> = (props) => {
             justify="space-between"
         >
             <Wrapper gap="10px" width="calc(100% - 30px)" justify='start'>
-                <Button onClick={() => props.toggleDone(props.id)}>
+                <Button onClick={() => allTasks.toggleDone(props.id)}>
                     {
                         props.isDone ?
                             <Checked /> :
@@ -45,13 +42,13 @@ const Task: React.FC<ITaskProps> = (props) => {
             </Wrapper>
             {
                 isHovered ?
-                    <Button onClick={props.removeFromTasks}>
+                    <Button onClick={() => allTasks.removeFromTasks(props.id)}>
                         <Trash />
                     </Button> :
                     null
             }
         </TaskWrapper>
     )
-}
+})
 
 export default Task
