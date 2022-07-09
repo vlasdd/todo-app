@@ -3,7 +3,16 @@ import { nanoid } from "nanoid";
 import TasksTypes from "../constants/tasks-types";
 import ITask from "../interfaces/task";
 
-class Tasks{
+interface ITasks{
+    allTasks: ITask[];
+    setAllTasks: (allTasks: ITask[]) => void;
+    defineTasks: (currentTab: TasksTypes) => ITask[];
+    createTask: (wordEntering: string, currentTab: TasksTypes) => void;
+    removeFromTasks: (id: string) => void;
+    toggleDone: (id: string) => void;
+}
+
+class Tasks implements ITasks{
     allTasks: ITask[] = [];
 
     constructor(){
