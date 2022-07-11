@@ -39,7 +39,7 @@ const TasksSection: React.FC = observer(() => {
           <Wrapper width="100%" height="60%">
             <TypesSection
               clickEvent={(type: TasksTypes) => {
-                currentTab.currentTab = type;
+                currentTab.setCurrentTab(type);
                 setIsMenuOpen(false);
               }}
               border={false}
