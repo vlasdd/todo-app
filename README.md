@@ -22,4 +22,4 @@ Complete
 
 ## Usage
 
-To Visit This App: `https://Vlased.github.io/todo-app/`
+To Visit This App: https://Vlased.github.io/todo-app/
