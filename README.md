@@ -1,6 +1,6 @@
 # Todo App
 
-This project is just a simple todo app. It is built with **React.js**, **MobX**, **TypeScript** and **Styled Components** 
+This project is just a simple todo app.
 
 ## Technologies used
 
